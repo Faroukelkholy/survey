@@ -1,0 +1,41 @@
+version: '3.6'
+services:
+  survey_go:
+    container_name: survey_go
+    restart: always
+    build:
+      dockerfile: deploy/golang.Dockerfile
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/go/src/survey
+    links:
+      - survey_mongo
+    depends_on:
+      - survey_mongo
+    networks:
+      - survey
+
+  survey_mongo:
+    container_name: survey_mongo
+    restart: always
+    image: mongo:latest
+    command: [--auth]
+    environment:
+      MONGO_INITDB_DATABASE: survey_db
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - survey
+
+volumes:
+  mongodb_data_container:
+
+networks:
+  survey:
+    name: survey
