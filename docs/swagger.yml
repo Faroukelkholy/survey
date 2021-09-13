@@ -1,0 +1,101 @@
+openapi: 3.0.2
+info:
+  title: survey
+  version: 1.0.0
+paths:
+  /survey_forms:
+    post:
+      requestBody:
+        content:
+         application/json:
+            schema:
+              $ref: '#/components/schemas/surveyForm'
+        required: true
+      tags:
+        - survey_forms
+      responses:
+        '201':
+          description: created
+      summary: create a survey form
+  '/survey_forms/:id/surveys':
+    get:
+      tags:
+        - survey_forms
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/survey'
+          description: success
+      summary: Fetch surveys for a survey form
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/survey'
+        required: true
+      tags:
+        - survey_forms
+      responses:
+        '201':
+          description: created
+      summary: submit a filled survey
+components:
+  schemas:
+    surveyForm:
+      title: SurveyForm
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+              answers:
+                type: array
+                items:
+                  type: string
+      example:
+        id: 613f62eac51520f0073254f8
+        title: favourite color
+        content:
+          -
+            question: what is your favorite color?
+            answers:
+              - blue
+              - green
+              - red
+              - yellow
+          -
+            question: which shade you prefer ?
+            answers:
+              - light
+              - dark
+    survey:
+      title: Survey
+      type: object
+      properties:
+        id:
+          type: string
+        survey_form_id:
+          type: string
+        answers:
+          type: array
+          items:
+            type: string
+      example:
+        id: 613f62eac51520f0073254f9
+        survey_form_id: 613f62eac51520f0073254f8
+        answers:
+          - blue
+          - light
