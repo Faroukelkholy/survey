@@ -2,6 +2,8 @@ package storage
 
 import (
 	"context"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -13,6 +15,13 @@ func NewSurveyFormRepository(db *mongo.Database) SurveyFormRepository {
 	return &surveyFormRepository{db: db}
 }
 
-func (s *surveyFormRepository) CreateSurveyForm(ctx context.Context, from *SurveyFrom) (err error) {
-	panic("implement me")
+func (repo *surveyFormRepository) CreateSurveyForm(ctx context.Context, form *SurveyForm) (err error) {
+	sf := &SurveyForm{
+		ID:      primitive.NewObjectID(),
+		Title:   form.Title,
+		Content: form.Content,
+	}
+
+	_, err = repo.db.Collection("survey_form").InsertOne(ctx, sf)
+	return
 }
